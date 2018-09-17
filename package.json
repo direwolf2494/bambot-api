@@ -1,0 +1,21 @@
+{
+  "name": "slackbot-api",
+  "version": "1.0.0",
+  "description": "api for slackbot events",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./node_modules/typescript/lib/tsc.js && node ./src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shervain Barrett <jay_94@live.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/config": "0.0.34",
+    "@types/express": "^4.16.0",
+    "body-parser": "^1.18.3",
+    "config": "^2.0.1",
+    "express": "^4.16.3",
+    "typescript": "^3.0.3"
+  }
+}
