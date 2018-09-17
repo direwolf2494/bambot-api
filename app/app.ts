@@ -33,11 +33,10 @@ app.post('/api/v1/slackbot', (req, res) => {
   }
 
   if (response_text !== undefined) {
-    console.log(payload);
     axios.post('https://slack.com/api/chat.postMessage', {
       token: TOKEN,
       text: response_text,
-      channel: payload.event.item.channel
+      channel: payload.event.channel
     });
   }
 });
