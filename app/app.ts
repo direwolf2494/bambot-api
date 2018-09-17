@@ -13,16 +13,32 @@ let TOKEN = process.env.BOT_TOKEN;
 app.post('/api/v1/slackbot', (req, res) => {
   let payload = req.body;
   res.sendStatus(200);
+  let response_text;
 
   if (payload.event.type === "app_mention") {
+
     if (payload.event.text.includes("tell me a joke")) {
-        axios.post('https://slack.com/api/chat.postMessage', {
-          token: TOKEN,
-          text: `Hello ${payload.event.user}! Knock, knock.`,
-          channel: payload.event.item.channel
-        });
+      response_text = `Hello ${payload.event.user}! Knock, knock.`;
     }
-}
+  }
+
+  if (payload.event.type === "message") {
+    if (payload.event.text.includes("Who's there?")) {
+        response_text = "A bot user";
+    }
+
+    if (payload.event.text.includes("Bot user who?")) {
+        response_text = "No, I'm a bot user. I don't understand jokes.";
+    }
+  }
+
+  if (response_text !== undefined) {
+    axios.post('https://slack.com/api/chat.postMessage', {
+      token: TOKEN,
+      text: response_text,
+      channel: payload.event.item.channel
+    });
+  }
 });
 
 const PORT = process.env.PORT || 5000;
