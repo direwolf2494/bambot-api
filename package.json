@@ -9,6 +9,9 @@
   },
   "author": "Shervain Barrett <jay_94@live.com>",
   "license": "MIT",
+  "engines": {
+    "node": "8.11.1"
+  },
   "dependencies": {
     "@types/body-parser": "^1.17.0",
     "@types/config": "0.0.34",
