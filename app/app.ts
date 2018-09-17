@@ -12,8 +12,7 @@ let TOKEN = process.env.BOT_TOKEN;
 // default slackbot endpoint
 app.post('/api/v1/slackbot', (req, res) => {
   let payload = req.body;
-  res.sendStatus(200);
-  let response_text;
+  let response_text = undefined;
 
   if (payload.event.type === "app_mention") {
 
@@ -39,6 +38,8 @@ app.post('/api/v1/slackbot', (req, res) => {
       channel: payload.event.channel
     });
   }
+
+  res.sendStatus(200);
 });
 
 const PORT = process.env.PORT || 5000;
