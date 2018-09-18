@@ -4,7 +4,7 @@
   "description": "api for slackbot events",
   "main": "index.js",
   "scripts": {
-    "start": "node ./node_modules/typescript/lib/tsc.js && node ./src/app.js",
+    "start": "node ./node_modules/typescript/lib/tsc.js && node ./src/bambot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Shervain Barrett <jay_94@live.com>",
