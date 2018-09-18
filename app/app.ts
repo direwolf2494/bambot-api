@@ -46,6 +46,12 @@ app.post('/api/v1/slackbot', (req, res) => {
   res.sendStatus(200);
 });
 
+app.post('/api/v2/slackbot', (req, res) => {
+  res.status(200).send({
+    challenge: req.body.challenge
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
