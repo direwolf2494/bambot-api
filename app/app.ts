@@ -36,7 +36,12 @@ app.post('/api/v1/slackbot', (req, res) => {
       token: TOKEN,
       text: response_text,
       channel: payload.event.channel
-    });
+    }).then(res => {
+      console.log(res);
+    }).catch((err => {
+      console.error(err);
+    }));
+    
   }
 
   res.sendStatus(200);
