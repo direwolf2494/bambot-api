@@ -7,8 +7,8 @@ const app = express();
 // configure body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-let TOKEN = process.env.BOT_TOKEN;
-
+// set axios token
+axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.BOT_TOKEN}`
 // default slackbot endpoint
 app.post('/api/v1/slackbot', (req, res) => {
   let payload = req.body;
@@ -33,7 +33,6 @@ app.post('/api/v1/slackbot', (req, res) => {
 
   if (response_text !== undefined) {
     axios.post('https://slack.com/api/chat.postMessage', {
-      token: TOKEN,
       text: response_text,
       channel: payload.event.channel
     }).then(res => {
