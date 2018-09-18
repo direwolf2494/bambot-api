@@ -17,7 +17,7 @@ app.post('/api/v1/slackbot', (req, res) => {
   if (payload.event.type === "app_mention") {
 
     if (payload.event.text.includes("tell me a joke")) {
-      response_text = `Hello ${payload.event.user}! Knock, knock.`;
+      response_text = `Hello <@${payload.event.user}>! Knock, knock.`;
     }
   }
 
