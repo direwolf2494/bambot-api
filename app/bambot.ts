@@ -65,8 +65,9 @@ app.post('/api/v1/bambot', (req, res) => {
 	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
 		let hours = parseInt(payload.submission.hours);
 
-		if ( hours <= 0) {
-			let errors = { errors: [{ name: "hours", error: "Hours should be greater than 0." }]};
+		if (hours === NaN || hours <= 0) {
+			let message = hours === NaN ? "Hours should be a Number." : "Hours should be greater than 0.";
+			let errors = { errors: [{ name: "hours", error: message }]};
 			res.status(200).send(errors);
 		} else {
 			res.send();
