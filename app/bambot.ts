@@ -44,6 +44,7 @@ axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.BOT_TOKEN}`
 // default slackbot endpoint
 app.post('/api/v1/bambot', (req, res) => {
 	let payload = req.body;
+	console.log(payload);
 
 	if (payload.type == 'interactive_message') {
 		let actions = payload.actions;
