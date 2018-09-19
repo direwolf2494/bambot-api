@@ -15,6 +15,17 @@ const scheduler = new Notifier(String(config.get('schedule')), notificationMessa
 scheduler.start();
 
 const app = express();
+// configure body-parser
+var rawBodySaver = (req, res, buf, encoding) => {
+	if (buf && buf.length) {
+	  req.rawBody = buf.toString(encoding || 'utf8');
+	}
+}
+// ensure that raw body is added to request object
+app.use(bodyParser.json({ verify: rawBodySaver }));
+app.use(bodyParser.urlencoded({ verify: rawBodySaver, extended: false }));
+app.use(bodyParser.raw({ verify: rawBodySaver, type: function () { return true } }));
+
 // verify that request came from slack
 app.use((req, res, next) => {
 	let maxTimeDiff = 60 * 5;
@@ -23,15 +34,16 @@ app.use((req, res, next) => {
 	let error = new nodeException.HttpException('Invalid Authorization Signature', 401)
 	console.log('RequestTimestamp: ' + reqTimestamp);
 	console.log('SlackSignature: ' + slackSignature);
-	console.log('Body: ' +  req.body);
+	// @ts-ignore
+	console.log('Body: ' +  req.rawBody);
 	// verify that request headers were sent
 	if (reqTimestamp == undefined || slackSignature == undefined) return next(error);
 	// verify that request was sent recently
 	let currentTimestamp = (new Date()).getTime() / 1000;
 	console.log('Current Timestamp: ' + currentTimestamp);
 	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) return next(error);
-	// create base64 verification string
-	let sigBasestring = `v0:${reqTimestamp}:${req.body}`;
+	// @ts-ignore create base64 verification string
+	let sigBasestring = `v0:${reqTimestamp}:${req.rawBody}`;
 	let mySignature = 'v0=' + crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET)
 		.update(sigBasestring)
 		.digest('hex');
@@ -42,9 +54,6 @@ app.use((req, res, next) => {
 	next();
 });
 
-// configure body-parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 // set slack api bot token
 axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.BOT_TOKEN}`
 
