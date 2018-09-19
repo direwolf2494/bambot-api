@@ -55,7 +55,6 @@ app.post('/api/v1/bambot', (req, res) => {
 				payload['hours'] = 8;
 				BambooAPI.updateHours(payload);
 			} else if (actions[0].value == 'custom') { // user clicked More Info
-				res.sendStatus(200);
 				let userDialog = JSON.parse(JSON.stringify(dialog));
 				userDialog.dialog.callback_id = `${payload.callback_id}_dialog`;
 				userDialog.dialog.state = payload.message_ts; // use to keep track of message_ts to update message later
@@ -74,6 +73,8 @@ app.post('/api/v1/bambot', (req, res) => {
 			res.sendStatus(200);
 			payload['hours'] = hours;
 			payload['message_ts'] = payload.state;
+			console.log(payload);
+			console.log('Dialog Should Close');
 			// BambooAPI.updateHours(payload);
 		}
 	}
