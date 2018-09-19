@@ -49,7 +49,10 @@ let dialog = {
     }
 }
 
-let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Jamaica'};
+let dateOptions = { 
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', 
+    timeZone: 'America/Jamaica', timeZoneName: 'short'
+};
 
 function getDateValues() {
     let today = new Date();
