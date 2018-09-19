@@ -3,7 +3,7 @@ import * as config from 'config';
 import * as bodyParser from 'body-parser';
 import * as crypto from 'crypto';
 import axios from 'axios';
-import nodeException from 'node-exceptions';
+import * as nodeException from 'node-exceptions';
 
 import Notifier from './scheduler';
 import BambooAPI from './bamboo.service';
