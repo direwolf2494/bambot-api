@@ -15,25 +15,25 @@ scheduler.start();
 
 const app = express();
 // verify that request came from slack
-// app.use((req, res, next) => {
-// 	let maxTimeDiff = 60 * 5;
-// 	let reqTimestamp = parseInt(req.get('X-Slack-Request-Timestamp'));
-// 	let slackSignature = req.get('X-Slack-Signature');
-// 	// verify that request headers were sent
-// 	if (reqTimestamp == undefined || slackSignature == undefined) next('error');
-// 	// verify that request was sent recently
-// 	let currentTimestamp = (new Date()).getTime() / 1000;
-// 	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) next('error');
-// 	// create base64 verification string
-// 	let sigBasestring = `v0:${reqTimestamp}:${req.body}`;
-// 	let mySignature = 'v0=' + crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET)
-// 		.update(sigBasestring)
-// 		.digest('hex');
-// 	// compare the signature string
-// 	if (mySignature !== slackSignature) next('error');
-// 	// verification passed
-// 	next();
-// });
+app.use((req, res, next) => {
+	let maxTimeDiff = 60 * 5;
+	let reqTimestamp = parseInt(req.get('X-Slack-Request-Timestamp'));
+	let slackSignature = req.get('X-Slack-Signature');
+	// verify that request headers were sent
+	if (reqTimestamp == undefined || slackSignature == undefined) next('error');
+	// verify that request was sent recently
+	let currentTimestamp = (new Date()).getTime() / 1000;
+	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) next('error');
+	// create base64 verification string
+	let sigBasestring = `v0:${reqTimestamp}:${req.body}`;
+	let mySignature = 'v0=' + crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET)
+		.update(sigBasestring)
+		.digest('hex');
+	// compare the signature string
+	if (mySignature !== slackSignature) next('error');
+	// verification passed
+	next();
+});
 
 // configure body-parser
 app.use(bodyParser.json());
