@@ -3,6 +3,7 @@ import * as config from 'config';
 import * as bodyParser from 'body-parser';
 import * as crypto from 'crypto';
 import axios from 'axios';
+import nodeException from 'node-exceptions';
 
 import Notifier from './scheduler';
 import BambooAPI from './bamboo.service';
@@ -17,20 +18,25 @@ const app = express();
 // verify that request came from slack
 app.use((req, res, next) => {
 	let maxTimeDiff = 60 * 5;
-	let reqTimestamp = parseInt(req.get('X-Slack-Request-Timestamp'));
+	let reqTimestamp = Number.parseFloat(req.get('X-Slack-Request-Timestamp'));
 	let slackSignature = req.get('X-Slack-Signature');
+	let error = new nodeException.HttpException('Invalid Authorization Signature', 401)
+	console.log('RequestTimestamp: ' + reqTimestamp);
+	console.log('SlackSignature: ' + slackSignature);
 	// verify that request headers were sent
-	if (reqTimestamp == undefined || slackSignature == undefined) next('error');
+	if (reqTimestamp == undefined || slackSignature == undefined) next(error);
 	// verify that request was sent recently
 	let currentTimestamp = (new Date()).getTime() / 1000;
-	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) next('error');
+	console.log('Current Timestamp: ' + currentTimestamp);
+	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) next(error);
 	// create base64 verification string
 	let sigBasestring = `v0:${reqTimestamp}:${req.body}`;
 	let mySignature = 'v0=' + crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET)
 		.update(sigBasestring)
 		.digest('hex');
+	console.log('Generate Signature: ' + mySignature);
 	// compare the signature string
-	if (mySignature !== slackSignature) next('error');
+	if (mySignature !== slackSignature) next(error);
 	// verification passed
 	next();
 });
