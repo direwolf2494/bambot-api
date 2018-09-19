@@ -58,20 +58,23 @@ app.post('/api/v1/bambot', (req, res) => {
 				let userDialog = JSON.parse(JSON.stringify(dialog));
 				userDialog.dialog['callback_id'] = `${payload.callback_id}_dialog`;
 				userDialog['trigger_id'] = payload.trigger_id;
+				userDialog.state = payload.message_ts; // use to keep track of message_ts to update message later
+				console.log('State: ' + userDialog.state);
 				console.log(userDialog);
 				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
 			}
 		}
 	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
 		let hours = parseInt(payload.submission.hours);
-
+		console.log('Hours: ' + hours);
 		if ( hours <= 0) {
 			let errors = { errors: [{ name: "hours", error: "Hours should be greater than 0." }]};
 			res.status(200).send(errors);
 		} else {
 			res.sendStatus(200);
 			payload['hours'] = hours;
-			// BambooAPI.updateHours(payload);
+			payload['message_ts'] = payload.state;
+			BambooAPI.updateHours(payload);
 		}
 	}
 });
