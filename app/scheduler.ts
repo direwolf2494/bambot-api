@@ -33,7 +33,7 @@ class Notifier {
                     message.attachments.callback_id = `bamboo_hours_${user.id}`;
                     message['channel'] = `${user.id}`;
                     message['text'] += (new Date()).toLocaleDateString('en-US', dateOptions);
-
+                    console.log(message);
                     SlackAPI.postMessage(message).then(res => {
                         console.log(`Notification Job: Sent Timesheet Notification To ${user.name}`);
                     });
