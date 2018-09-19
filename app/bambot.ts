@@ -51,7 +51,7 @@ app.use((req, res, next) => {
 // error handling middleware
 app.use((err, req, res, next) => {
 	console.error(err.toString());
-	res.status(err.status).send({ error: err });
+	res.status(err.status).send(err.message);
 })
 
 // set slack api bot token
@@ -60,7 +60,6 @@ axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.BOT_TOKEN}`
 // default slackbot endpoint
 app.post('/api/v1/bambot', (req, res) => {
 	let payload = typeof(req.body.payload) === 'string' ? JSON.parse(req.body.payload) : req.body.payload;
-	console.log(payload);
 
 	if (payload.type == 'interactive_message') {
 		let actions = payload.actions;
