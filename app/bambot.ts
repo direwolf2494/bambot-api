@@ -51,7 +51,7 @@ app.post('/api/v1/bambot', (req, res) => {
 		if (actions != undefined && actions.length > 0) {
 			// click 8 hours
 			if (actions[0].value === 'default') {
-				res.sendStatus(200);
+				res.send();
 				payload['hours'] = 8;
 				BambooAPI.updateHours(payload);
 			} else if (actions[0].value == 'custom') { // user clicked More Info
@@ -59,7 +59,6 @@ app.post('/api/v1/bambot', (req, res) => {
 				userDialog.dialog.callback_id = `${payload.callback_id}_dialog`;
 				userDialog.dialog.state = payload.message_ts; // use to keep track of message_ts to update message later
 				userDialog['trigger_id'] = payload.trigger_id;
-				console.log(userDialog);
 				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
 			}
 		}
@@ -72,9 +71,7 @@ app.post('/api/v1/bambot', (req, res) => {
 		} else {
 			res.send();
 			payload['hours'] = hours;
-			payload['message_ts'] = payload.state;
-			console.log(payload);
-			console.log('Dialog Should Close');
+			payload['message_ts'] = Number.parseFloat(payload.state);
 			BambooAPI.updateHours(payload);
 		}
 	}
