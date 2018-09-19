@@ -54,7 +54,7 @@ let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numer
 function getDateValues() {
     let today = new Date();
     return {
-        timestamp: today.getTime() / 1000,
+        timestamp: Math.ceil(today.getTime() / 1000),
         localString: today.toLocaleDateString('en-US', dateOptions)
     }
 }
