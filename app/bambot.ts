@@ -63,10 +63,10 @@ app.post('/api/v1/bambot', (req, res) => {
 			}
 		}
 	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
-		let hours = parseInt(payload.submission.hours);
+		let hours = Number.parseFloat(payload.submission.hours);
 
-		if (hours === NaN || hours <= 0) {
-			let message = hours === NaN ? "Hours should be a Number." : "Hours should be greater than 0.";
+		if (isNaN(hours) || hours < 0 || hours > 24) {
+			let message = isNaN(hours) ? "Hours should be a Number." : "Hours should be in range 0 - 24.";
 			let errors = { errors: [{ name: "hours", error: message }]};
 			res.status(200).send(errors);
 		} else {
