@@ -30,7 +30,8 @@ class Notifier {
                 if (!user.is_bot && user.tz_offset === offset) {
                     // copy the notification messaget
                     let message = JSON.parse(JSON.stringify(notificationMessage));
-                    message.attachments[0].callback_id = `bamboo_hours_${user.id}`;
+                    let timestamp = Date.now() / 1000;
+                    message.attachments[0].callback_id = `bamboo_hours_${user.id}_${timestamp}`;
                     message['channel'] = `${user.id}`;
                     message['text'] += (new Date()).toLocaleDateString('en-US', dateOptions);
                     console.log(message);

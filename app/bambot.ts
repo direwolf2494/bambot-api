@@ -59,7 +59,6 @@ app.post('/api/v1/bambot', (req, res) => {
 				userDialog.dialog['callback_id'] = `${payload.callback_id}_dialog`;
 				userDialog['trigger_id'] = payload.trigger_id;
 				userDialog.state = payload.message_ts; // use to keep track of message_ts to update message later
-				console.log('State: ' + userDialog.state);
 				console.log(userDialog);
 				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
 			}
