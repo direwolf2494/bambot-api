@@ -52,6 +52,7 @@ app.post('/api/v1/bambot', (req, res) => {
 			// click 8 hours
 			if (actions[0].value === 'default') {
 				res.sendStatus(200);
+				payload['hours'] = 8;
 				BambooAPI.updateHours(payload);
 			} else if (actions[0].value == 'custom') { // user clicked More Info
 				let userDialog = JSON.parse(JSON.stringify(dialog));

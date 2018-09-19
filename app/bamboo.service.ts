@@ -15,12 +15,17 @@ class BambooService {
     }
 
     public updateHours(data) {
+        let payload = {
+            channel: data.channel.id,
+            ts: data.message_ts
+        }
+        
         return this.instance.post('/posts', data).then(res => {
-            let text = '8 Hours Added Successfully. :smiley:';
-            SlackAPI.sendReponse(data.response_url, {text: text}).then(res => console.log(res.data)); // add then/catch
+            payload['text'] = `${data.hours} Hours Added Successfully :smiley:`;
+            SlackAPI.updateMessage(payload).then(res => console.log(res.data));
         }).catch(err => {
-            let text = 'Unable to Add Hours. Visit BambooHR and update manually. :disappointed:';
-            SlackAPI.sendReponse(data.response_url, {text: text}).then(res => console.log(res.data)); // add then/catch
+            payload['text'] = 'Unable to Add Hours. Visit BambooHR and update manually. :disappointed:';
+            SlackAPI.updateMessage(payload).then(res => console.log(res.data));
         });
     }
 }

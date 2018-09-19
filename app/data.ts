@@ -1,5 +1,5 @@
 let notificationMessage = {
-    "text": "Time to add your hours for today",
+    "text": "Time to add your hours for: ", // add the date here
     "attachments": [
         {
             "text": "Didn't work 8 hours? Click More Info.",
@@ -49,5 +49,8 @@ let dialog = {
     }
 }
 
+let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
 export { notificationMessage };
 export { dialog };
+export { dateOptions };

@@ -1,6 +1,6 @@
 import * as nodeSchedule from 'node-schedule';
 import SlackAPI from './slack.service';
-import { notificationMessage } from './data';
+import { notificationMessage, dateOptions } from './data';
 
 class Notifier {
     public job;
@@ -32,6 +32,7 @@ class Notifier {
                     let message = JSON.parse(JSON.stringify(notificationMessage));
                     message['callback_id'] = `bamboo_hours_${user.id}`;
                     message['channel'] = `${user.id}`;
+                    message['text'] += (new Date()).toLocaleDateString('en-US', dateOptions);
 
                     SlackAPI.postMessage(message).then(res => {
                         console.log(`Notification Job: Sent Timesheet Notification To ${user.name}`);

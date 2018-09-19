@@ -18,6 +18,10 @@ class SlackService {
         return this.instance.post('/chat.postMessage', message);
     }
 
+    public updateMessage(message): AxiosPromise {
+        return this.instance.post('/chat.update', message);
+    }
+
     public openDialog(dialog): AxiosPromise {
         return this.instance.post('/dialog.open', dialog);
     }
