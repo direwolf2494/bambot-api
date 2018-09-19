@@ -56,9 +56,9 @@ app.post('/api/v1/bambot', (req, res) => {
 				BambooAPI.updateHours(payload);
 			} else if (actions[0].value == 'custom') { // user clicked More Info
 				let userDialog = JSON.parse(JSON.stringify(dialog));
-				userDialog.dialog['callback_id'] = `${payload.callback_id}_dialog`;
+				userDialog.dialog.callback_id = `${payload.callback_id}_dialog`;
+				userDialog.dialog.state = payload.message_ts; // use to keep track of message_ts to update message later
 				userDialog['trigger_id'] = payload.trigger_id;
-				userDialog.state = payload.message_ts; // use to keep track of message_ts to update message later
 				console.log(userDialog);
 				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
 			}
