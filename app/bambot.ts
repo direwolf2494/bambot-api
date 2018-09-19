@@ -31,28 +31,28 @@ app.use((req, res, next) => {
 	let maxTimeDiff = 60 * 5;
 	let reqTimestamp = Number.parseFloat(req.get('X-Slack-Request-Timestamp'));
 	let slackSignature = req.get('X-Slack-Signature');
-	let error = new nodeException.HttpException('Invalid Authorization Signature', 401)
-	console.log('RequestTimestamp: ' + reqTimestamp);
-	console.log('SlackSignature: ' + slackSignature);
-	// @ts-ignore
-	console.log('Body: ' +  req.rawBody);
+	let error = new nodeException.HttpException('Invalid Authorization Signature', 401);
 	// verify that request headers were sent
-	if (reqTimestamp == undefined || slackSignature == undefined) return next(error);
+	if (reqTimestamp == undefined || slackSignature == undefined) next(error);
 	// verify that request was sent recently
 	let currentTimestamp = (new Date()).getTime() / 1000;
-	console.log('Current Timestamp: ' + currentTimestamp);
-	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) return next(error);
+	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) next(error);
 	// @ts-ignore create base64 verification string
 	let sigBasestring = `v0:${reqTimestamp}:${req.rawBody}`;
 	let mySignature = 'v0=' + crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET)
 		.update(sigBasestring)
 		.digest('hex');
-	console.log('Generate Signature: ' + mySignature);
 	// compare the signature string
-	if (mySignature !== slackSignature) return next(error);
+	if (mySignature !== slackSignature) next(error);
 	// verification passed
 	next();
 });
+
+// error handling middleware
+app.use((err, req, res, next) => {
+	console.error(err.toString());
+	res.status(err.status).send({ error: err });
+})
 
 // set slack api bot token
 axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.BOT_TOKEN}`
