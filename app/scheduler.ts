@@ -1,6 +1,6 @@
 import * as nodeSchedule from 'node-schedule';
 import SlackAPI from './slack.service';
-import { notificationMessage, dateOptions } from './data';
+import { notificationMessage, getDateValues } from './data';
 
 class Notifier {
     public job;
@@ -18,7 +18,7 @@ class Notifier {
     }
 
     private notificationJob() {
-        console.log("Notification Job: Started at " + new Date());
+        console.log("Notification Job: Started.");
 
         // let message = notificationMessage;
         let offset = -18000;
@@ -33,7 +33,9 @@ class Notifier {
                     let timestamp = Date.now() / 1000;
                     message.attachments[0].callback_id = `bamboo_hours_${user.id}_${timestamp}`;
                     message['channel'] = `${user.id}`;
-                    message['text'] += (new Date()).toLocaleDateString('en-US', dateOptions);
+                    // add date to the text
+                    let date = getDateValues();
+                    message['text'] += `<!date^${date.timestamp}^{date_long}|${date.localString}>`;
                     SlackAPI.postMessage(message).then(res => {
                         console.log(`Notification Job: Sent Timesheet Notification To ${user.name}`);
                     });
@@ -43,7 +45,7 @@ class Notifier {
             console.error('Notification Job: ' + err);
         });
 
-        console.log("Notification Job: Completed at " + new Date());
+        console.log("Notification Job: Completed.");
     }
 };
 

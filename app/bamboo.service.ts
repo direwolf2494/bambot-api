@@ -1,6 +1,6 @@
 import axios from 'axios';
 import SlackAPI from './slack.service';
-import { dateOptions } from './data';
+import { getDateValues } from './data';
 
 class BambooService {
     private instance;
@@ -23,13 +23,19 @@ class BambooService {
         }
 
         return this.instance.post('/posts', data).then(res => {
-            let today = (new Date()).toLocaleDateString('en-US', dateOptions);
-            payload['text'] = `:smiley: Great! I've added ${data.hours} hours to your timesheet for ${today}.`;
-            SlackAPI.updateMessage(payload).then(res => console.log(res.data));
+            let date = getDateValues();
+            payload['text'] = `:smiley: Great! I've added ${data.hours} hours to your timesheet for` + 
+                `<!date^${date.timestamp}^{date_long}|${date.localString}>.`;
+            SlackAPI.updateMessage(payload).then(this.updateHandler);
         }).catch(err => {
             payload['text'] = ':disappointed: Sigh. I was unable to update your timesheet. Visit BambooHR and update manually.';
-            SlackAPI.updateMessage(payload).then(res => console.log(res.data));
+            SlackAPI.updateMessage(payload).then(this.updateHandler);
         });
+    }
+
+    private updateHandler(res) {
+        if (res.data.ok) console.log('Message Updated Successfully.');
+        else console.error('Update Failed: ' + res.data.error);
     }
 }
 

@@ -49,8 +49,16 @@ let dialog = {
     }
 }
 
-let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Jamaica'};
+
+function getDateValues() {
+    let today = new Date();
+    return {
+        timestamp: today.getTime() / 1000,
+        localString: today.toLocaleDateString('en-US', dateOptions)
+    }
+}
 
 export { notificationMessage };
 export { dialog };
-export { dateOptions };
+export { getDateValues };
