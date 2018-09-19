@@ -24,7 +24,7 @@ class BambooService {
 
         return this.instance.post('/posts', data).then(res => {
             let date = getDateValues();
-            payload['text'] = `:smiley: Great! I've added ${data.hours} hours to your timesheet for` + 
+            payload['text'] = `:smiley: Great! I've added ${data.hours} hours to your timesheet for ` + 
                 `<!date^${date.timestamp}^{date_long}|${date.localString}>.`;
             SlackAPI.updateMessage(payload).then(this.updateHandler);
         }).catch(err => {
