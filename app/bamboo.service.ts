@@ -18,7 +18,8 @@ class BambooService {
     public updateHours(data) {
         let payload = {
             channel: data.channel.id,
-            ts: data.message_ts
+            ts: data.message_ts,
+            attachments: []
         }
 
         return this.instance.post('/posts', data).then(res => {
