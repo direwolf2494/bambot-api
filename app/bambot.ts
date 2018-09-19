@@ -62,13 +62,16 @@ app.post('/api/v1/bambot', (req, res) => {
 				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
 			}
 		}
-  	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
-		if (parseInt(payload.submission.hours) <= 0) {
+	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
+		let hours = parseInt(payload.submission.hours);
+
+		if ( hours <= 0) {
 			let errors = { errors: [{ name: "hours", error: "Hours should be greater than 0." }]};
 			res.status(200).send(errors);
 		} else {
 			res.sendStatus(200);
-			BambooAPI.updateHours(payload);
+			payload['hours'] = hours;
+			// BambooAPI.updateHours(payload);
 		}
 	}
 });
