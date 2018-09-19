@@ -70,12 +70,12 @@ app.post('/api/v1/bambot', (req, res) => {
 			let errors = { errors: [{ name: "hours", error: "Hours should be greater than 0." }]};
 			res.status(200).send(errors);
 		} else {
-			res.sendStatus(200);
+			res.send();
 			payload['hours'] = hours;
 			payload['message_ts'] = payload.state;
 			console.log(payload);
 			console.log('Dialog Should Close');
-			// BambooAPI.updateHours(payload);
+			BambooAPI.updateHours(payload);
 		}
 	}
 });
