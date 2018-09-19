@@ -56,9 +56,10 @@ app.post('/api/v1/bambot', (req, res) => {
 				BambooAPI.updateHours(payload);
 			} else if (actions[0].value == 'custom') { // user clicked More Info
 				let userDialog = JSON.parse(JSON.stringify(dialog));
-				userDialog['callback_id'] = payload.callback_id;
+				userDialog.dialog['callback_id'] = `${payload.callback_id}_dialog`;
 				userDialog['trigger_id'] = payload.trigger_id;
-				SlackAPI.openDialog(userDialog);
+				console.log(userDialog);
+				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
 			}
 		}
   	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
