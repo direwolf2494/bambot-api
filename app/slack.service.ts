@@ -1,4 +1,5 @@
 import axios, { AxiosPromise, AxiosInstance } from 'axios';
+import * as qs from 'qs';
 
 class SlackService {
     private instance: AxiosInstance; 
@@ -7,7 +8,7 @@ class SlackService {
         this.instance = axios.create({
             baseURL: 'https://slack.com/api',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${token}`
             }
         });
@@ -22,7 +23,10 @@ class SlackService {
     }
 
     public listUsers() {
-        return this.instance.post('/users.list', {limit: 200});
+        return this.instance.post('/users.list', {limit: 200}, {
+            headers: {"Content-Type": 'application/x-www-form-urlencoded; charset=utf-8'},
+            transformRequest: [(data, headers) => (qs.stringify(data))]
+        });
     }
 
     public sendReponse(responseUrl: string, data: object) {

@@ -5,12 +5,12 @@ import { notificationMessage } from './data';
 class Notifier {
     public job;
     private rule: string;
-    private tzOffset = -18000;
-    private message;
-    
-    public constructor(rule: string, message) {
+    private static message;
+    private static tzOffset: number = -18000;
+
+    public constructor(rule: string, message: object) {
         this.rule = rule;
-        this.message = message;
+        Notifier.message = message;
     }
 
     public start() {
@@ -20,29 +20,29 @@ class Notifier {
     private notificationJob() {
         console.log("Notification Job: Started at " + new Date());
 
-        SlackAPI.listUsers().then(users => {
-            // @ts-ignore
+        // let message = notificationMessage;
+        let offset = -18000;
+
+        SlackAPI.listUsers().then((res) => {
+            let users = res.data;
+
             users.members.forEach(user => {
-                // in Bogota/EST timezone
-                if (user.tz_offset == this.tzOffset) {
-                    this.sendNotification(user.id, user.name);
+                if (!user.is_bot && user.tz_offset === offset) {
+                    // copy the notification messaget
+                    let message = JSON.parse(JSON.stringify(notificationMessage));
+                    message['callback_id'] = `bamboo_hours_${user.id}`;
+                    message['channel'] = `${user.id}`;
+
+                    SlackAPI.postMessage(message).then(res => {
+                        console.log(`Notification Job: Sent Timesheet Notification To ${user.name}`);
+                    });
                 }
             });
         }).catch(err => {
-            console.log('Notification Job: Error Retrieving Users.' + err);
+            console.error('Notification Job: ' + err);
         });
 
         console.log("Notification Job: Completed at " + new Date());
-    }
-
-    private sendNotification(userId: string, userName: string) {
-        this.message['callback_id'] = `bamboo_hours_${userId}`;
-        this.message['channel_id'] = userId;
-        SlackAPI.postMessage(this.message).then(res => {
-            console.log(`Sent Timesheet Notification To ${userName}`);
-        }).catch(err => {
-            console.error(err);
-        });
     }
 };
 
