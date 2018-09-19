@@ -65,7 +65,7 @@ app.post('/api/v1/bambot', (req, res) => {
 		}
 	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
 		let hours = parseInt(payload.submission.hours);
-		console.log('Hours: ' + hours);
+
 		if ( hours <= 0) {
 			let errors = { errors: [{ name: "hours", error: "Hours should be greater than 0." }]};
 			res.status(200).send(errors);
@@ -73,7 +73,7 @@ app.post('/api/v1/bambot', (req, res) => {
 			res.sendStatus(200);
 			payload['hours'] = hours;
 			payload['message_ts'] = payload.state;
-			BambooAPI.updateHours(payload);
+			// BambooAPI.updateHours(payload);
 		}
 	}
 });

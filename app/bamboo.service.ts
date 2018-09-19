@@ -1,5 +1,6 @@
 import axios from 'axios';
 import SlackAPI from './slack.service';
+import { dateOptions } from './data';
 
 class BambooService {
     private instance;
@@ -19,12 +20,13 @@ class BambooService {
             channel: data.channel.id,
             ts: data.message_ts
         }
-        
+
         return this.instance.post('/posts', data).then(res => {
-            payload['text'] = `${data.hours} Hours Added Successfully :smiley:`;
+            let today = (new Date()).toLocaleDateString('en-US', dateOptions);
+            payload['text'] = `:smiley: Great! I've added ${data.hours} hours to your timesheet for ${today}.`;
             SlackAPI.updateMessage(payload).then(res => console.log(res.data));
         }).catch(err => {
-            payload['text'] = 'Unable to Add Hours. Visit BambooHR and update manually. :disappointed:';
+            payload['text'] = ':disappointed: Sigh. I was unable to update your timesheet. Visit BambooHR and update manually.';
             SlackAPI.updateMessage(payload).then(res => console.log(res.data));
         });
     }
