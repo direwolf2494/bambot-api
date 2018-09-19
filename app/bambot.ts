@@ -23,12 +23,13 @@ app.use((req, res, next) => {
 	let error = new nodeException.HttpException('Invalid Authorization Signature', 401)
 	console.log('RequestTimestamp: ' + reqTimestamp);
 	console.log('SlackSignature: ' + slackSignature);
+	console.log('Body: ' +  req.body);
 	// verify that request headers were sent
-	if (reqTimestamp == undefined || slackSignature == undefined) next(error);
+	if (reqTimestamp == undefined || slackSignature == undefined) return next(error);
 	// verify that request was sent recently
 	let currentTimestamp = (new Date()).getTime() / 1000;
 	console.log('Current Timestamp: ' + currentTimestamp);
-	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) next(error);
+	if ( (currentTimestamp - reqTimestamp) > maxTimeDiff) return next(error);
 	// create base64 verification string
 	let sigBasestring = `v0:${reqTimestamp}:${req.body}`;
 	let mySignature = 'v0=' + crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET)
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
 		.digest('hex');
 	console.log('Generate Signature: ' + mySignature);
 	// compare the signature string
-	if (mySignature !== slackSignature) next(error);
+	if (mySignature !== slackSignature) return next(error);
 	// verification passed
 	next();
 });
