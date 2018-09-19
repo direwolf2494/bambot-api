@@ -71,7 +71,7 @@ app.post('/api/v1/bambot', (req, res) => {
 		} else {
 			res.send();
 			payload['hours'] = hours;
-			payload['message_ts'] = Number.parseFloat(payload.state);
+			payload['message_ts'] = payload.state;
 			BambooAPI.updateHours(payload);
 		}
 	}
