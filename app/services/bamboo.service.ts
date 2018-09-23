@@ -60,7 +60,7 @@ class BambooService {
         let payload = {
             "timeTrackingId": uuid.v4(),
             "employeeId": userId,
-            "dateHoursWorked": recordDate.toISOString(),
+            "dateHoursWorked": recordDate.toISOString().split('T')[0],
             "rateType": "REG",
             "hoursWorked": userData.hours,
         }
