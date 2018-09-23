@@ -1,6 +1,6 @@
 import * as nodeSchedule from 'node-schedule';
-import SlackAPI from './slack.service';
-import { notificationMessage, getDateValues } from './data';
+import SlackAPI from './services/slack.service';
+import { notificationMessage, getDateValues } from './utils/data';
 
 class Notifier {
     public job;
@@ -18,7 +18,7 @@ class Notifier {
     }
 
     private notificationJob() {
-        console.log("Notification Job: Started.");
+        console.info("Notification Job: Started.");
 
         // let message = notificationMessage;
         let offset = -18000;
@@ -37,7 +37,7 @@ class Notifier {
                     let date = getDateValues();
                     message['text'] += `<!date^${date.timestamp}^{date_long}|${date.localString}>`;
                     SlackAPI.postMessage(message).then(res => {
-                        console.log(`Notification Job: Sent Timesheet Notification To ${user.name}`);
+                        console.info(`Notification Job: Sent Timesheet Notification To ${user.name}`);
                     });
                 }
             });
@@ -45,7 +45,7 @@ class Notifier {
             console.error('Notification Job: ' + err);
         });
 
-        console.log("Notification Job: Completed.");
+        console.info("Notification Job: Completed.");
     }
 };
 

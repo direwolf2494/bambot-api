@@ -6,9 +6,9 @@ import axios from 'axios';
 import * as nodeException from 'node-exceptions';
 
 import Notifier from './scheduler';
-import BambooAPI from './bamboo.service';
-import SlackAPI from './slack.service';
-import { notificationMessage, dialog } from './data';
+import BambooAPI from './services/bamboo.service';
+import SlackAPI from './services/slack.service';
+import { notificationMessage, dialog } from './utils/data';
 
 // setup scheduled messages
 const scheduler = new Notifier(String(config.get('schedule')), notificationMessage);
@@ -54,9 +54,6 @@ app.use((err, req, res, next) => {
 	res.status(err.status).send(err.message);
 })
 
-// set slack api bot token
-axios.defaults.headers.post['Authorization'] = `Bearer ${process.env.BOT_TOKEN}`
-
 // default slackbot endpoint
 app.post('/api/v1/bambot', (req, res) => {
 	let payload = typeof(req.body.payload) === 'string' ? JSON.parse(req.body.payload) : req.body.payload;
@@ -68,13 +65,15 @@ app.post('/api/v1/bambot', (req, res) => {
 			if (actions[0].value === 'default') {
 				res.send();
 				payload['hours'] = 8;
+				payload['email'] = 'sbarrett@qualityworkscg.com';
+				// TODO: Add logic to get user email from slack
 				BambooAPI.updateHours(payload);
 			} else if (actions[0].value == 'custom') { // user clicked More Info
 				let userDialog = JSON.parse(JSON.stringify(dialog));
 				userDialog.dialog.callback_id = `${payload.callback_id}_dialog`;
 				userDialog.dialog.state = payload.message_ts; // use to keep track of message_ts to update message later
 				userDialog['trigger_id'] = payload.trigger_id;
-				SlackAPI.openDialog(userDialog).then(res => console.log(res.data));
+				SlackAPI.openDialog(userDialog).then(res => console.info(res.data));
 			}
 		}
 	} else if (payload.type == 'dialog_submission') { // user submitted the dialog
@@ -88,6 +87,8 @@ app.post('/api/v1/bambot', (req, res) => {
 			res.send();
 			payload['hours'] = hours;
 			payload['message_ts'] = payload.state;
+			payload['email'] = 'sbarrett@qualityworkscg.com';
+			// TODO: Add logic to get user email from slack
 			BambooAPI.updateHours(payload);
 		}
 	}
@@ -96,5 +97,5 @@ app.post('/api/v1/bambot', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
+	console.info(`server running on port ${PORT}`)
 });
